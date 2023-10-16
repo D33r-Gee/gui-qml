@@ -80,6 +80,7 @@ const std::vector<std::string> RPC_COMMANDS_NOT_SAFE_FOR_FUZZING{
     "gettxoutproof",        // avoid prohibitively slow execution
     "importmempool", // avoid reading from disk
     "importwallet", // avoid reading from disk
+    "loadtxoutset",   // avoid reading from disk
     "loadwallet",   // avoid reading from disk
     "savemempool",           // disabled as a precautionary measure: may take a file path argument in the future
     "setban",                // avoid DNS lookups
@@ -121,6 +122,7 @@ const std::vector<std::string> RPC_COMMANDS_SAFE_FOR_FUZZING{
     "getblockstats",
     "getblocktemplate",
     "getchaintips",
+    "getchainstates",
     "getchaintxstats",
     "getconnectioncount",
     "getdeploymentinfo",
@@ -285,9 +287,7 @@ std::string ConsumeScalarRPCArgument(FuzzedDataProvider& fuzzed_data_provider)
         },
         [&] {
             // base58 encoded key
-            const std::vector<uint8_t> random_bytes = fuzzed_data_provider.ConsumeBytes<uint8_t>(32);
-            CKey key;
-            key.Set(random_bytes.begin(), random_bytes.end(), fuzzed_data_provider.ConsumeBool());
+            CKey key = ConsumePrivateKey(fuzzed_data_provider);
             if (!key.IsValid()) {
                 return;
             }
@@ -295,9 +295,7 @@ std::string ConsumeScalarRPCArgument(FuzzedDataProvider& fuzzed_data_provider)
         },
         [&] {
             // hex encoded pubkey
-            const std::vector<uint8_t> random_bytes = fuzzed_data_provider.ConsumeBytes<uint8_t>(32);
-            CKey key;
-            key.Set(random_bytes.begin(), random_bytes.end(), fuzzed_data_provider.ConsumeBool());
+            CKey key = ConsumePrivateKey(fuzzed_data_provider);
             if (!key.IsValid()) {
                 return;
             }
