@@ -109,6 +109,14 @@ Item {
                         nodeSettingsView.push(networktraffic_page)
                     }
                 }
+                Separator { Layout.fillWidth: true }
+                Button {
+                    id: loadUTXOSet
+                    text: "Load UTXO snapshot"
+                    onClicked: {
+                        nodeModel.snapshotLoad()
+                    }
+                }
             }
         }
     }

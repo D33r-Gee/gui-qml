@@ -178,6 +178,9 @@ public:
     //! Get verification progress.
     virtual double getVerificationProgress() = 0;
 
+    //! Load UTXO Snapshot.
+    virtual bool snapshotLoad() = 0;
+
     //! Is initial block download.
     virtual bool isInitialBlockDownload() = 0;
 
