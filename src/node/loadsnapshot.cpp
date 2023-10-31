@@ -30,13 +30,13 @@ struct CUpdatedBlock
 
 // using namespace node;
 
-bool ChainstateManager::LoadSnapshot()
+bool ChainstateManager::LoadSnapshot(NodeContext& node)
 {
     std::string username = getenv("USER");
 
     std::string path_string = "/home/" + username + "/qml-au-signet/signet/utxo-signet-160000.dat";
 
-    NodeContext node;
+    // NodeContext node;
 
     fs::path path(fs::u8path(path_string));
     if (!fs::exists(path)) {
@@ -64,9 +64,24 @@ bool ChainstateManager::LoadSnapshot()
     LogPrintf("[loadsnapshot] waiting to see blockheader %s in headers chain before snapshot activation\n",
         base_blockhash.ToString());
     
+    if (node.chainman == nullptr) {
+    // Handle error
+    LogPrintf("[loadsnapshot] node.chainman is null\n");
+    return false;
+    }
+
     ChainstateManager& chainman = *node.chainman;
 
+    // snapshot_start_block = chainman.m_blockman.LookupBlockIndex(base_blockhash);
+
+    // if (!snapshot_start_block) {
+    //     LogPrintf("[loadsnapshot] can't find blockheader %s\n",
+    //         base_blockhash.ToString());
+    //     return false;
+    // }
+
     while (max_secs_to_wait_for_headers > 0) {
+        LogPrintf("[loadsnapshot] base_blockhash = %s\n", base_blockhash.ToString());
         snapshot_start_block = WITH_LOCK(::cs_main,
             return chainman.m_blockman.LookupBlockIndex(base_blockhash));
         max_secs_to_wait_for_headers -= 1;
@@ -78,6 +93,8 @@ bool ChainstateManager::LoadSnapshot()
         }
     }
 
+    // // snapshot_start_block = chainman.m_blockman.LookupBlockIndex(base_blockhash);
+
     if (!snapshot_start_block) {
         LogPrintf("[loadsnapshot] timed out waiting for snapshot start blockheader %s\n",
             base_blockhash.ToString());
@@ -86,8 +103,9 @@ bool ChainstateManager::LoadSnapshot()
     
     // Activate the snapshot.
     if (!chainman.ActivateSnapshot(afile, metadata, false)) {
-        std::string error_message = "Unable to load UTXO snapshot " + path.u8string();
-        throw std::runtime_error(error_message);
+        // std::string error_message = "Unable to load UTXO snapshot " + path.u8string();
+        // throw std::runtime_error(error_message);
+        LogPrintf("[loadsnapshot] Unable to load UTXO snapshot %s\n", path.u8string());
         return false;
     }
 

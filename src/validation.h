@@ -20,6 +20,7 @@
 #include <kernel/chainstatemanager_opts.h>
 #include <kernel/cs_main.h> // IWYU pragma: export
 #include <node/blockstorage.h>
+#include <node/context.h>
 #include <policy/feerate.h>
 #include <policy/packages.h>
 #include <policy/policy.h>
@@ -64,6 +65,7 @@ struct Params;
 namespace util {
 class SignalInterrupt;
 } // namespace util
+using node::NodeContext;
 
 /** Maximum number of dedicated script-checking threads allowed */
 static const int MAX_SCRIPTCHECK_THREADS = 15;
@@ -1042,7 +1044,7 @@ public:
     //! Returns nullptr if no snapshot has been loaded.
     const CBlockIndex* GetSnapshotBaseBlock() const EXCLUSIVE_LOCKS_REQUIRED(::cs_main);
 
-    [[nodiscard]] bool LoadSnapshot();
+    [[nodiscard]] bool LoadSnapshot(NodeContext& node);
 
     //! The most-work chain.
     Chainstate& ActiveChainstate() const;

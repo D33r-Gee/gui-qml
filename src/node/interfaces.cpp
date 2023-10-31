@@ -396,7 +396,7 @@ public:
     {
         m_context = context;
     }
-    bool snapshotLoad() override { return chainman().LoadSnapshot(); }
+    bool snapshotLoad() override { return chainman().LoadSnapshot(*m_context); }
     ArgsManager& args() { return *Assert(Assert(m_context)->args); }
     ChainstateManager& chainman() { return *Assert(m_context->chainman); }
     NodeContext* m_context{nullptr};
