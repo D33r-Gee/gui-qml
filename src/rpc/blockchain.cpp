@@ -9,6 +9,7 @@
 #include <chain.h>
 #include <chainparams.h>
 #include <clientversion.h>
+#include <clientversion.h>
 #include <coins.h>
 #include <common/args.h>
 #include <consensus/amount.h>

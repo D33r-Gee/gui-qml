@@ -10,6 +10,7 @@
 #include <dbwrapper.h>
 #include <kernel/blockmanager_opts.h>
 #include <kernel/chain.h>
+#include <kernel/chain.h>
 #include <kernel/chainparams.h>
 #include <kernel/cs_main.h>
 #include <kernel/messagestartchars.h>
@@ -146,6 +147,7 @@ private:
      * per index entry (nStatus, nChainWork, nTimeMax, etc.) as well as peripheral
      * collections like m_dirty_blockindex.
      */
+    bool LoadBlockIndex(const std::optional<uint256>& snapshot_blockhash)
     bool LoadBlockIndex(const std::optional<uint256>& snapshot_blockhash)
         EXCLUSIVE_LOCKS_REQUIRED(cs_main);
 

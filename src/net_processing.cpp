@@ -19,6 +19,7 @@
 #include <kernel/mempool_entry.h>
 #include <logging.h>
 #include <kernel/chain.h>
+#include <kernel/chain.h>
 #include <merkleblock.h>
 #include <netbase.h>
 #include <netmessagemaker.h>
@@ -1456,6 +1457,7 @@ void PeerManagerImpl::FindNextBlocks(std::vector<const CBlockIndex*>& vBlocks, c
                     // We reached the end of the window.
                     if (vBlocks.size() == 0 && waitingfor != peer.m_id) {
                         // We aren't able to fetch anything, but we would be if the download window was one larger.
+                        if (nodeStaller) *nodeStaller = waitingfor;
                         if (nodeStaller) *nodeStaller = waitingfor;
                     }
                     return;

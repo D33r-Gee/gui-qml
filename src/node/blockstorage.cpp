@@ -11,6 +11,7 @@
 #include <flatfile.h>
 #include <hash.h>
 #include <kernel/chain.h>
+#include <kernel/chain.h>
 #include <kernel/chainparams.h>
 #include <kernel/messagestartchars.h>
 #include <logging.h>

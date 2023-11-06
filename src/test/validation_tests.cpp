@@ -133,6 +133,7 @@ BOOST_AUTO_TEST_CASE(test_assumeutxo)
 
     for (auto empty : bad_heights) {
         const auto out = params->AssumeutxoForHeight(empty);
+        const auto out = params->AssumeutxoForHeight(empty);
         BOOST_CHECK(!out);
     }
 

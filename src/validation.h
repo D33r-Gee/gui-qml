@@ -14,12 +14,14 @@
 #include <attributes.h>
 #include <chain.h>
 #include <kernel/chain.h>
+#include <kernel/chain.h>
 #include <consensus/amount.h>
 #include <deploymentstatus.h>
 #include <kernel/chainparams.h>
 #include <kernel/chainstatemanager_opts.h>
 #include <kernel/cs_main.h> // IWYU pragma: export
 #include <node/blockstorage.h>
+#include <node/context.h>
 #include <policy/feerate.h>
 #include <policy/packages.h>
 #include <policy/policy.h>
@@ -64,6 +66,7 @@ struct Params;
 namespace util {
 class SignalInterrupt;
 } // namespace util
+using node::NodeContext;
 
 /** Maximum number of dedicated script-checking threads allowed */
 static const int MAX_SCRIPTCHECK_THREADS = 15;

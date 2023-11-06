@@ -6,6 +6,7 @@
 #include <validation.h>
 
 #include <kernel/chain.h>
+#include <kernel/chain.h>
 #include <kernel/coinstats.h>
 #include <kernel/mempool_persist.h>
 
@@ -70,6 +71,7 @@
 #include <string>
 #include <tuple>
 #include <utility>
+#include <tuple>
 
 using kernel::CCoinsStats;
 using kernel::CoinStatsHashType;

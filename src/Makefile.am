@@ -424,6 +424,7 @@ libbitcoin_node_a_SOURCES = \
   node/interface_ui.cpp \
   node/interfaces.cpp \
   node/kernel_notifications.cpp \
+  node/loadsnapshot.cpp \
   node/mempool_args.cpp \
   node/mempool_persist_args.cpp \
   node/miner.cpp \
@@ -949,6 +950,7 @@ libbitcoinkernel_la_SOURCES = \
   logging.cpp \
   node/blockstorage.cpp \
   node/chainstate.cpp \
+  node/loadsnapshot.cpp \
   node/utxo_snapshot.cpp \
   policy/feerate.cpp \
   policy/fees.cpp \
