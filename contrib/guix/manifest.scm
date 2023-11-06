@@ -3,7 +3,6 @@
              ((gnu packages bash) #:select (bash-minimal))
              (gnu packages bison)
              ((gnu packages certs) #:select (nss-certs))
-             ((gnu packages cdrom) #:select (xorriso))
              ((gnu packages cmake) #:select (cmake-minimal))
              (gnu packages commencement)
              (gnu packages compression)
@@ -141,10 +140,6 @@ desirable for building Bitcoin Core release binaries."
 chain for " target " development."))
       (home-page (package-home-page pthreads-xgcc))
       (license (package-license pthreads-xgcc)))))
-
-(define (make-nsis-for-gcc-10 base-nsis)
-  (package-with-extra-patches base-nsis
-    (search-our-patches "nsis-gcc-10-memmove.patch")))
 
 ;; While LIEF is packaged in Guix, we maintain our own package,
 ;; to simplify building, and more easily apply updates.
@@ -604,11 +599,11 @@ inspecting signatures in Mach-O binaries.")
            ;; Windows
            (list zip
                  (make-mingw-pthreads-cross-toolchain "x86_64-w64-mingw32")
-                 (make-nsis-for-gcc-10 nsis-x86_64)
+                 nsis-x86_64
                  nss-certs
                  osslsigncode))
           ((string-contains target "-linux-")
            (list (make-bitcoin-cross-toolchain target)))
           ((string-contains target "darwin")
-           (list clang-toolchain-15 binutils cmake-minimal xorriso python-signapple))
+           (list clang-toolchain-15 binutils cmake-minimal python-signapple zip))
           (else '())))))
