@@ -1,4 +1,4 @@
-// Copyright (c) 2022 The Bitcoin Core developers
+// Copyright (c) 2023 The Bitcoin Core developers
 // Distributed under the MIT software license, see the accompanying
 // file COPYING or http://www.opensource.org/licenses/mit-license.php.
 
@@ -32,15 +32,19 @@ struct CUpdatedBlock
 
 bool ChainstateManager::LoadSnapshot(NodeContext& node)
 {
-    std::string username = getenv("USER");
+    // Android path
+    #ifdef __ANDROID__
+        std::string path_string = "/data/data/org.bitcoincore.qt/files/utxo-800000.dat";
+    #else
+        std::string username = getenv("USER");
 
-    std::string path_string = "/home/" + username + "/qml-au-signet/signet/utxo-signet-160000.dat";
-
-    // NodeContext node;
+        std::string path_string = "/home/" + username + "/snapshots/utxo-800000.dat";
+    #endif // __ANDROID__
 
     fs::path path(fs::u8path(path_string));
     if (!fs::exists(path)) {
         LogPrintf("[loadsnapshot] snapshot file %s does not exist\n", path.u8string());
+        LogPrintf("[loadsnapshot] current working directory is %s\n", fs::absolute(fs::u8path(".")).u8string().c_str());
         return false;
     }
 
