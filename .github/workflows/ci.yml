@@ -23,21 +23,6 @@ env:
   MAKEJOBS: '-j10'
 
 jobs:
-<<<<<<< HEAD
-  lint:
-    name: 'lint'
-    runs-on: ubuntu-latest
-    steps:
-      - uses: actions/checkout@v4
-        with:
-          fetch-depth: 0
-      - run: |
-          sudo ./ci/lint/04_install.sh
-          echo "PATH=/python_build/bin:$PATH" >> "$GITHUB_ENV"
-          echo "CIRRUS_PR=${{ github.event.number }}" >> "$GITHUB_ENV"
-      - run: |
-          ./ci/lint/06_script.sh
-=======
   test-each-commit:
     name: 'test each commit'
     runs-on: ubuntu-22.04
@@ -81,7 +66,6 @@ jobs:
           # Run tests on commits after the last merge commit and before the PR head commit
           # Use clang++, because it is a bit faster and uses less memory than g++
           git rebase --exec "echo Running test-one-commit on \$( git log -1 ) && ./autogen.sh && CC=clang CXX=clang++ ./configure && make clean && make -j $(nproc) check && ./test/functional/test_runner.py -j $(( $(nproc) * 2 ))" ${{ env.TEST_BASE }}
->>>>>>> sjors-bitcoin/2023/09/assume_mainnet
 
   macos-native-x86_64:
     name: 'macOS 13 native, x86_64, no depends, sqlite only, gui'
