@@ -43,6 +43,11 @@ Page {
                     text: qsTr("Connection settings")
                     onClicked: connections.incrementCurrentIndex()
                 }
+                TextButton {
+                    Layout.alignment: Qt.AlignCenter
+                    text: qsTr("Load UTXO snapshot")
+                    onClicked: connections.setCurrentIndex(2)
+                }
             }
             lastPage: true
             buttonText: qsTr("Next")
@@ -52,6 +57,15 @@ Page {
             navRightDetail: NavButton {
                 text: qsTr("Done")
                 onClicked: {
+                    connections.decrementCurrentIndex()
+                }
+            }
+        }
+        SettingsSnapshot {
+            navRightDetail: NavButton {
+                text: qsTr("Done")
+                onClicked: {
+                    connections.decrementCurrentIndex()
                     connections.decrementCurrentIndex()
                 }
             }

@@ -12,6 +12,8 @@
 #include <qt/optionsmodel.h>
 #include <txdb.h>
 #include <univalue.h>
+#include <util/fs.h>
+#include <util/fs_helpers.h>
 #include <validation.h>
 
 #include <cassert>
@@ -104,4 +106,24 @@ common::SettingsValue OptionsQmlModel::pruneSetting() const
 {
     assert(!m_prune || m_prune_size_gb >= 1);
     return m_prune ? PruneGBtoMiB(m_prune_size_gb) : 0;
+}
+
+QString PathToQString(const fs::path &path)
+{
+    return QString::fromStdString(path.u8string());
+}
+
+QString OptionsQmlModel::getDefaultDataDirectory()
+{
+    return PathToQString(GetDefaultDataDir());
+}
+
+void OptionsQmlModel::setDefaultSnapshotDirectory(QString path)
+{
+    // QString path = getDefaultDataDirectory();
+    if (!path.isEmpty()) {
+        UniValue pathValue(path.toStdString());
+        m_node.updateRwSetting("snapshotdir", pathValue);
+        Q_EMIT snapshotDirectoryChanged();
+    }
 }
