@@ -127,3 +127,18 @@ void OptionsQmlModel::setDefaultSnapshotDirectory(QString path)
         Q_EMIT snapshotDirectoryChanged();
     }
 }
+
+void OptionsQmlModel::setLoadUtxo(bool new_load_utxo)
+{
+    if (new_load_utxo != m_load_utxo) {
+        m_load_utxo = new_load_utxo;
+        m_node.updateRwSetting("loadutxo", new_load_utxo);
+        Q_EMIT loadUtxoChanged(new_load_utxo);
+    }
+}
+
+QString OptionsQmlModel::getSnapshotDirectory()
+{
+    std::string snapshotDir = m_node.getPersistentSetting("snapshotdir").get_str();
+    return QString::fromStdString(snapshotDir);
+}

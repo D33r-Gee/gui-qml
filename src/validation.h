@@ -1044,7 +1044,7 @@ public:
     //! Returns nullptr if no snapshot has been loaded.
     const CBlockIndex* GetSnapshotBaseBlock() const EXCLUSIVE_LOCKS_REQUIRED(::cs_main);
 
-    [[nodiscard]] bool LoadSnapshot(NodeContext& node);
+    [[nodiscard]] bool LoadSnapshot(NodeContext& node, const std::string& path_string);
 
     //! The most-work chain.
     Chainstate& ActiveChainstate() const;

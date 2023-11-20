@@ -30,11 +30,11 @@ struct CUpdatedBlock
 
 // using namespace node;
 
-bool ChainstateManager::LoadSnapshot(NodeContext& node)
+bool ChainstateManager::LoadSnapshot(NodeContext& node, const std::string& path_string)
 {
-    std::string username = getenv("USER");
+    // std::string username = getenv("USER");
 
-    std::string path_string = "/home/" + username + "/qml-au-signet/signet/utxo-signet-160000.dat";
+    // std::string path_string = "/home/" + username + "/qml-au-signet/signet/utxo-signet-160000.dat";
 
     // NodeContext node;
 

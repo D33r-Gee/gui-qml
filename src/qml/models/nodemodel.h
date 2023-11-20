@@ -33,6 +33,7 @@ class NodeModel : public QObject
     Q_PROPERTY(int remainingSyncTime READ remainingSyncTime NOTIFY remainingSyncTimeChanged)
     Q_PROPERTY(double verificationProgress READ verificationProgress NOTIFY verificationProgressChanged)
     Q_PROPERTY(bool pause READ pause WRITE setPause NOTIFY pauseChanged)
+    // Q_PROPERTY(QString pathSnapshot READ pathSnapshot CONSTANT)
 
 public:
     explicit NodeModel(interfaces::Node& node);
@@ -53,7 +54,7 @@ public:
     Q_INVOKABLE float getTotalBytesReceived() const { return (float)m_node.getTotalBytesRecv(); }
     Q_INVOKABLE float getTotalBytesSent() const { return (float)m_node.getTotalBytesSent(); }
 
-    Q_INVOKABLE bool snapshotLoad() const { return m_node.snapshotLoad(); }
+    Q_INVOKABLE bool snapshotLoad(QString path_file) const { return m_node.snapshotLoad(path_file.toStdString()); }
 
     Q_INVOKABLE void startNodeInitializionThread();
     Q_INVOKABLE void requestShutdown();

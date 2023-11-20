@@ -33,8 +33,8 @@ class OptionsQmlModel : public QObject
     Q_PROPERTY(int scriptThreads READ scriptThreads WRITE setScriptThreads NOTIFY scriptThreadsChanged)
     Q_PROPERTY(bool server READ server WRITE setServer NOTIFY serverChanged)
     Q_PROPERTY(bool upnp READ upnp WRITE setUpnp NOTIFY upnpChanged)
-    // Q_PROPERTY(QString getDefaultDataDirectory READ getDefaultDataDirectory CONSTANT)
     Q_PROPERTY(QString getDefaultDataDirectory READ getDefaultDataDirectory WRITE setDefaultSnapshotDirectory NOTIFY snapshotDirectoryChanged)
+    Q_PROPERTY(bool loadUtxo READ loadUtxo WRITE setLoadUtxo NOTIFY loadUtxoChanged)
 
 public:
     explicit OptionsQmlModel(interfaces::Node& node);
@@ -61,6 +61,10 @@ public:
     void setUpnp(bool new_upnp);
     QString getDefaultDataDirectory();
     Q_INVOKABLE void setDefaultSnapshotDirectory(QString path);
+    bool loadUtxo() const { return m_load_utxo; }
+    void setLoadUtxo(bool new_load_utxo);
+    Q_INVOKABLE QString getSnapshotDirectory();
+
 
 Q_SIGNALS:
     void dbcacheSizeMiBChanged(int new_dbcache_size_mib);
@@ -72,6 +76,7 @@ Q_SIGNALS:
     void serverChanged(bool new_server);
     void upnpChanged(bool new_upnp);
     void snapshotDirectoryChanged();
+    void loadUtxoChanged(bool new_load_utxo);
 
 private:
     interfaces::Node& m_node;
@@ -89,6 +94,7 @@ private:
     int m_script_threads;
     bool m_server;
     bool m_upnp;
+    bool m_load_utxo;
 
     common::SettingsValue pruneSetting() const;
 };

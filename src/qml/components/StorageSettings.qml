@@ -50,7 +50,6 @@ ColumnLayout {
                     optionsModel.pruneSizeGB = parseInt(text)
                     pruneTargetSetting.forceActiveFocus()
                     pruneTargetSetting.showErrorText = false
-                    console.log("Prune target set to " + text + " GB")
                 }
             }
         }

@@ -179,7 +179,7 @@ public:
     virtual double getVerificationProgress() = 0;
 
     //! Load UTXO Snapshot.
-    virtual bool snapshotLoad() = 0;
+    virtual bool snapshotLoad(const std::string& path_string) = 0;
 
     //! Is initial block download.
     virtual bool isInitialBlockDownload() = 0;

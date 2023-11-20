@@ -110,11 +110,15 @@ Item {
                     }
                 }
                 Separator { Layout.fillWidth: true }
-                Button {
-                    id: loadUTXOSet
-                    text: "Load UTXO snapshot"
+                Setting {
+                    id: gotoUtxoLoad
+                    Layout.fillWidth: true
+                    header: qsTr("UTXO Snapshot")
+                    actionItem: CaretRightIcon {
+                        color: gotoUtxoLoad.stateColor
+                    }
                     onClicked: {
-                        nodeModel.snapshotLoad()
+                        nodeSettingsView.push(loadutxo_page)
                     }
                 }
             }
@@ -229,6 +233,24 @@ Item {
                 headerBold: true
                 headerSize: 18
                 header: qsTr("Network traffic")
+            }
+        }
+    }
+    Component {
+        id: loadutxo_page
+        SettingsUtxo {
+            showHeader: false
+            navLeftDetail: NavButton {
+                iconSource: "image://images/caret-left"
+                text: qsTr("Back")
+                onClicked: {
+                    nodeSettingsView.pop()
+                }
+            }
+            navMiddleDetail: Header {
+                headerBold: true
+                headerSize: 18
+                header: qsTr("Load UTXO")
             }
         }
     }

@@ -20,12 +20,12 @@
 #endif
 #include <qml/components/blockclockdial.h>
 #include <qml/controls/linegraph.h>
+#include <qml/imageprovider.h>
 #include <qml/models/chainmodel.h>
 #include <qml/models/networktraffictower.h>
 #include <qml/models/nodemodel.h>
 #include <qml/models/options_model.h>
 #include <qml/models/peerlistsortproxy.h>
-#include <qml/imageprovider.h>
 #include <qml/util.h>
 #include <qt/guiconstants.h>
 #include <qt/guiutil.h>
@@ -194,7 +194,7 @@ int QmlGuiMain(int argc, char* argv[])
     /// Check for chain settings (Params() calls are only valid after this clause).
     try {
         SelectParams(gArgs.GetChainType());
-    } catch(std::exception &e) {
+    } catch (std::exception& e) {
         InitError(Untranslated(strprintf("%s\n", e.what())));
         return EXIT_FAILURE;
     }
@@ -254,6 +254,19 @@ int QmlGuiMain(int argc, char* argv[])
 
     QObject::connect(&node_model, &NodeModel::setTimeRatioList, &chain_model, &ChainModel::setTimeRatioList);
     QObject::connect(&node_model, &NodeModel::setTimeRatioListInitial, &chain_model, &ChainModel::setTimeRatioListInitial);
+
+    // Check if loadUtxo is true
+    if (gArgs.GetBoolArg("loadutxo", false)) {
+        // Get the snapshot path
+        std::string snapshotPath = gArgs.GetArg("snapshotdir", "");
+
+        // Convert std::string to QString
+        QString qSnapshotPath = QString::fromStdString(snapshotPath);
+
+        // Load the UTXO snapshot from the path
+        node_model.snapshotLoad(qSnapshotPath);
+
+    }
 
     qGuiApp->setQuitOnLastWindowClosed(false);
     QObject::connect(qGuiApp, &QGuiApplication::lastWindowClosed, [&] {

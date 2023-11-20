@@ -19,6 +19,7 @@
         <file>components/StorageSettings.qml</file>
         <file>components/ThemeSettings.qml</file>
         <file>components/TotalBytesIndicator.qml</file>
+        <file>components/UtxoLoad.qml</file>
         <file>controls/ContinueButton.qml</file>
         <file>controls/CoreText.qml</file>
         <file>controls/ExternalLink.qml</file>
@@ -61,6 +62,7 @@
         <file>pages/settings/SettingsSnapshot.qml</file>
         <file>pages/settings/SettingsStorage.qml</file>
         <file>pages/settings/SettingsTheme.qml</file>
+        <file>pages/settings/SettingsUtxo.qml</file>
     </qresource>
     <qresource prefix="/icons">
         <file alias="arrow-down">res/icons/arrow-down.png</file>

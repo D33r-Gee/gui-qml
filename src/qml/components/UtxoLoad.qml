@@ -44,7 +44,7 @@ ColumnLayout {
         Layout.fillWidth: true
         header: qsTr("Snapshot File Location")
         actionItem: TextField {
-            placeholderText: optionsModel.getDefaultDataDirectory
+            placeholderText: optionsModel.getSnapshotDirectory() !== "" ? optionsModel.getSnapshotDirectory() : optionsModel.getDefaultDataDirectory()
             text: ""
             onEditingFinished: {
                 optionsModel.setDefaultSnapshotDirectory(text)
@@ -52,5 +52,22 @@ ColumnLayout {
             }
         }
         onClicked: loadedItem.forceActiveFocus()
+    }
+    Separator { Layout.fillWidth: true }
+    Setting {
+        id: activateSnapshot
+        Layout.fillWidth: true
+        header: qsTr("Activate UTXO snapshot file")
+        actionItem: OptionSwitch {
+            checked: nodeModel.snapshotLoad(optionsModel.getSnapshotDirectory())
+            onToggled: {
+            var path = optionsModel.getSnapshotDirectory()
+            nodeModel.snapshotLoad(path)
+            }
+        }
+        onClicked: {
+          loadedItem.toggle()
+          loadedItem.toggled()
+        }
     }
 }

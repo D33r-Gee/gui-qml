@@ -396,7 +396,7 @@ public:
     {
         m_context = context;
     }
-    bool snapshotLoad() override { return chainman().LoadSnapshot(*m_context); }
+    bool snapshotLoad(const std::string& path_string) override { return chainman().LoadSnapshot(*m_context, path_string); }
     ArgsManager& args() { return *Assert(Assert(m_context)->args); }
     ChainstateManager& chainman() { return *Assert(m_context->chainman); }
     NodeContext* m_context{nullptr};
