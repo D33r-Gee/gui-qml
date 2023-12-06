@@ -139,6 +139,10 @@ void OptionsQmlModel::setLoadUtxo(bool new_load_utxo)
 
 QString OptionsQmlModel::getSnapshotDirectory()
 {
-    std::string snapshotDir = m_node.getPersistentSetting("snapshotdir").get_str();
+    UniValue snapshotDirValue = m_node.getPersistentSetting("snapshotdir");
+    if (snapshotDirValue.isNull()) {
+        return "";
+    }
+    std::string snapshotDir = snapshotDirValue.get_str();
     return QString::fromStdString(snapshotDir);
 }

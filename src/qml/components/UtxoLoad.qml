@@ -59,7 +59,6 @@ ColumnLayout {
         Layout.fillWidth: true
         header: qsTr("Activate UTXO snapshot file")
         actionItem: OptionSwitch {
-            checked: nodeModel.snapshotLoad(optionsModel.getSnapshotDirectory())
             onToggled: {
             var path = optionsModel.getSnapshotDirectory()
             nodeModel.snapshotLoad(path)
