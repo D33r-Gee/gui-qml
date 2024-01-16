@@ -9,6 +9,7 @@
 #include <common/settings.h>
 #include <common/system.h>
 #include <common/args.h>
+#include <logging.h>
 #include <validation.h>
 
 #include <QObject>
@@ -34,7 +35,8 @@ class OptionsQmlModel : public QObject
     Q_PROPERTY(bool server READ server WRITE setServer NOTIFY serverChanged)
     Q_PROPERTY(bool upnp READ upnp WRITE setUpnp NOTIFY upnpChanged)
     Q_PROPERTY(QString getDefaultDataDirectory READ getDefaultDataDirectory WRITE setDefaultSnapshotDirectory NOTIFY snapshotDirectoryChanged)
-    Q_PROPERTY(bool loadUtxo READ loadUtxo WRITE setLoadUtxo NOTIFY loadUtxoChanged)
+    Q_PROPERTY(bool loadUtxo READ getLoadUtxo WRITE setLoadUtxo NOTIFY loadUtxoChanged)
+    Q_PROPERTY(bool snapshotLoaded READ getSnapshotLoaded WRITE setSnapshotLoaded NOTIFY snapshotLoadedChanged)
 
 public:
     explicit OptionsQmlModel(interfaces::Node& node);
@@ -61,10 +63,16 @@ public:
     void setUpnp(bool new_upnp);
     QString getDefaultDataDirectory();
     Q_INVOKABLE void setDefaultSnapshotDirectory(QString path);
-    bool loadUtxo() const { return m_load_utxo; }
+    bool loadUtxo() const { 
+    LogPrintf("[options_model] loadUtxo: %s\n", m_load_utxo ? "true" : "false");
+    return m_load_utxo; 
+    }
+    Q_INVOKABLE bool getLoadUtxo();
     void setLoadUtxo(bool new_load_utxo);
     Q_INVOKABLE QString getSnapshotDirectory();
-
+    bool snapshotLoaded() const { return m_snapshot_loaded; }
+    Q_INVOKABLE bool getSnapshotLoaded();
+    Q_INVOKABLE void setSnapshotLoaded(bool new_snapshot_loaded);
 
 Q_SIGNALS:
     void dbcacheSizeMiBChanged(int new_dbcache_size_mib);
@@ -77,6 +85,7 @@ Q_SIGNALS:
     void upnpChanged(bool new_upnp);
     void snapshotDirectoryChanged();
     void loadUtxoChanged(bool new_load_utxo);
+    void snapshotLoadedChanged(bool new_snapshot_loaded);
 
 private:
     interfaces::Node& m_node;
@@ -95,6 +104,7 @@ private:
     bool m_server;
     bool m_upnp;
     bool m_load_utxo;
+    bool m_snapshot_loaded;
 
     common::SettingsValue pruneSetting() const;
 };

@@ -150,6 +150,10 @@ public:
         });
         args().WriteSettingsFile();
     }
+    common::SettingsValue getSetting(const std::string& name) override
+    {
+        return args().GetSetting(name);
+    }
     void forceSetting(const std::string& name, const common::SettingsValue& value) override
     {
         args().LockSettings([&](common::Settings& settings) {

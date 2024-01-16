@@ -16,11 +16,23 @@ Page {
         id: navbar
     }
 
-    Component.onCompleted: nodeModel.startNodeInitializionThread();
+    Component.onCompleted: {
+        nodeModel.startNodeInitializionThread();
+        nodeModel.initializationFinished.connect(onInitializationFinished);
+    }
 
     BlockClock {
         parentWidth: parent.width - 40
         parentHeight: parent.height
         anchors.centerIn: parent
+    }
+
+    function onInitializationFinished() {
+        // This code will be executed after the initialization thread is finished
+        if (optionsModel.getLoadUtxo() && !optionsModel.getSnapshotLoaded()){
+            var snapshotDirectory = optionsModel.getSnapshotDirectory();
+            nodeModel.snapshotLoad(snapshotDirectory);
+            optionsModel.setSnapshotLoaded(true);
+        }
     }
 }

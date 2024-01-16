@@ -255,19 +255,6 @@ int QmlGuiMain(int argc, char* argv[])
     QObject::connect(&node_model, &NodeModel::setTimeRatioList, &chain_model, &ChainModel::setTimeRatioList);
     QObject::connect(&node_model, &NodeModel::setTimeRatioListInitial, &chain_model, &ChainModel::setTimeRatioListInitial);
 
-    // Check if loadUtxo is true
-    if (gArgs.GetBoolArg("loadutxo", false)) {
-        // Get the snapshot path
-        std::string snapshotPath = gArgs.GetArg("snapshotdir", "");
-
-        // Convert std::string to QString
-        QString qSnapshotPath = QString::fromStdString(snapshotPath);
-
-        // Load the UTXO snapshot from the path
-        node_model.snapshotLoad(qSnapshotPath);
-
-    }
-
     qGuiApp->setQuitOnLastWindowClosed(false);
     QObject::connect(qGuiApp, &QGuiApplication::lastWindowClosed, [&] {
         node->startShutdown();

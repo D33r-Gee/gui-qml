@@ -110,6 +110,7 @@ void NodeModel::initializeResult([[maybe_unused]] bool success, interfaces::Bloc
     setVerificationProgress(tip_info.verification_progress);
 
     Q_EMIT setTimeRatioListInitial();
+    Q_EMIT initializationFinished();
 }
 
 void NodeModel::startShutdownPolling()

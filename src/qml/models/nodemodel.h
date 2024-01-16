@@ -76,6 +76,7 @@ Q_SIGNALS:
 
     void setTimeRatioList(int new_time);
     void setTimeRatioListInitial();
+    void initializationFinished();
 
 protected:
     void timerEvent(QTimerEvent* event) override;

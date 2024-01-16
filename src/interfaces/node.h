@@ -109,6 +109,9 @@ public:
     //! Return setting value from <datadir>/settings.json or bitcoin.conf.
     virtual common::SettingsValue getPersistentSetting(const std::string& name) = 0;
 
+    //! Return setting value from <datadir>/settings.json.
+    virtual common::SettingsValue getSetting(const std::string& name) = 0;
+
     //! Update a setting in <datadir>/settings.json.
     virtual void updateRwSetting(const std::string& name, const common::SettingsValue& value) = 0;
 

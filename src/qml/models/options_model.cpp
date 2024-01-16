@@ -8,6 +8,8 @@
 #include <common/settings.h>
 #include <common/system.h>
 #include <interfaces/node.h>
+#include <logging.h>
+#include <node/utxo_snapshot.h>
 #include <qt/guiconstants.h>
 #include <qt/optionsmodel.h>
 #include <txdb.h>
@@ -128,6 +130,18 @@ void OptionsQmlModel::setDefaultSnapshotDirectory(QString path)
     }
 }
 
+bool OptionsQmlModel::getLoadUtxo()
+{
+    UniValue loadUtxoValue = m_node.getSetting("loadutxo");
+    if (loadUtxoValue.isNull()) {
+        return false;
+    }
+    bool loadUtxo = loadUtxoValue.get_bool();
+    LogPrintf("[options_model] loadUtxo = %s\n", loadUtxo ? "true" : "false");
+    return loadUtxo;
+}
+
+
 void OptionsQmlModel::setLoadUtxo(bool new_load_utxo)
 {
     if (new_load_utxo != m_load_utxo) {
@@ -144,5 +158,26 @@ QString OptionsQmlModel::getSnapshotDirectory()
         return "";
     }
     std::string snapshotDir = snapshotDirValue.get_str();
+    LogPrintf("[options_model] snapshotDir = %s\n", snapshotDir);
     return QString::fromStdString(snapshotDir);
+}
+
+bool OptionsQmlModel::getSnapshotLoaded()
+{
+    UniValue snapshotLoadedValue = m_node.getSetting("snapshotloaded");
+    if (snapshotLoadedValue.isNull()) {
+        return false;
+    }
+    bool snapshotLoaded = snapshotLoadedValue.get_bool();
+    LogPrintf("[options_model] snapshotLoaded = %s\n", snapshotLoaded ? "true" : "false");
+    return snapshotLoaded;
+}
+
+void OptionsQmlModel::setSnapshotLoaded(bool new_snapshot_loaded)
+{
+    if (new_snapshot_loaded != m_snapshot_loaded) {
+        m_snapshot_loaded = new_snapshot_loaded;
+        m_node.updateRwSetting("snapshotloaded", new_snapshot_loaded);
+        Q_EMIT snapshotLoadedChanged(new_snapshot_loaded);
+    }
 }
