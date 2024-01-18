@@ -5,6 +5,8 @@
 #ifndef BITCOIN_QML_MODELS_NODEMODEL_H
 #define BITCOIN_QML_MODELS_NODEMODEL_H
 
+#include <qml/models/chainmodel.h>
+
 #include <interfaces/handler.h>
 #include <interfaces/node.h>
 #include <clientversion.h>
@@ -50,10 +52,13 @@ public:
     void setVerificationProgress(double new_progress);
     bool pause() const { return m_pause; }
     void setPause(bool new_pause);
+    void loadSnapshot() {snapshotLoad(m_path_file);}
 
     Q_INVOKABLE float getTotalBytesReceived() const { return (float)m_node.getTotalBytesRecv(); }
     Q_INVOKABLE float getTotalBytesSent() const { return (float)m_node.getTotalBytesSent(); }
 
+    Q_INVOKABLE void initializeSnapshot(bool initLoadSnapshot, ChainModel* chainModel, QString path_file);
+    
     Q_INVOKABLE bool snapshotLoad(QString path_file) const { return m_node.snapshotLoad(path_file.toStdString()); }
 
     Q_INVOKABLE void startNodeInitializionThread();
@@ -100,6 +105,30 @@ private:
 
     void ConnectToBlockTipSignal();
     void ConnectToNumConnectionsChangedSignal();
+
+    QString m_path_file;
+};
+
+class SnapshotLoader : public QObject {
+    Q_OBJECT
+
+public:
+    SnapshotLoader(NodeModel* nodeModel, ChainModel* chainModel, QString path_file, QObject* parent = nullptr)
+        : QObject(parent), m_nodeModel(nodeModel), m_chainModel(chainModel), m_path_file(path_file) {}
+
+Q_SIGNALS:
+    void snapshotLoaded(bool result);
+
+public Q_SLOTS:
+    void loadSnapshot() {
+        bool result = m_nodeModel->snapshotLoad(m_path_file);
+        Q_EMIT snapshotLoaded(result);
+    }
+
+private:
+    QString m_path_file;
+    NodeModel* m_nodeModel;
+    ChainModel* m_chainModel;
 };
 
 #endif // BITCOIN_QML_MODELS_NODEMODEL_H

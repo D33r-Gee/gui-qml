@@ -28,11 +28,7 @@ Page {
     }
 
     function onInitializationFinished() {
-        // This code will be executed after the initialization thread is finished
-        if (optionsModel.getLoadUtxo() && !optionsModel.getSnapshotLoaded()){
-            var snapshotDirectory = optionsModel.getSnapshotDirectory();
-            nodeModel.snapshotLoad(snapshotDirectory);
-            optionsModel.setSnapshotLoaded(true);
-        }
+        nodeModel.initializeSnapshot(optionsModel.getLoadUtxo() && !optionsModel.getSnapshotLoaded(), chainModel, optionsModel.getSnapshotDirectory());
+        optionsModel.setSnapshotLoaded(true);
     }
 }

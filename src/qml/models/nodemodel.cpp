@@ -15,6 +15,7 @@
 #include <QDateTime>
 #include <QMetaObject>
 #include <QTimerEvent>
+#include <QThread>
 
 NodeModel::NodeModel(interfaces::Node& node)
     : m_node{node}
@@ -155,4 +156,20 @@ void NodeModel::ConnectToNumConnectionsChangedSignal()
         [this](PeersNumByType new_num_peers) {
             setNumOutboundPeers(new_num_peers.outbound_full_relay + new_num_peers.block_relay);
         });
+}
+
+
+
+void NodeModel::initializeSnapshot(bool initLoadSnapshot, ChainModel* chainModel, QString path_file) {
+    if (initLoadSnapshot) {
+        QThread* snapshot_thread = new QThread();
+        SnapshotLoader* loader = new SnapshotLoader(this, chainModel, path_file);
+        loader->moveToThread(snapshot_thread);
+
+        connect(snapshot_thread, &QThread::started, loader, &SnapshotLoader::loadSnapshot);
+        connect(snapshot_thread, &QThread::finished, loader, &QObject::deleteLater);
+        connect(snapshot_thread, &QThread::finished, snapshot_thread, &QThread::deleteLater);
+
+        snapshot_thread->start();
+    }
 }
