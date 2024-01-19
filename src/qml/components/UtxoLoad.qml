@@ -60,8 +60,10 @@ ColumnLayout {
         header: qsTr("Activate UTXO snapshot file")
         actionItem: OptionSwitch {
             onToggled: {
-            var path = optionsModel.getSnapshotDirectory()
-            nodeModel.snapshotLoad(path)
+                if (optionsModel.getLoadUtxo() && !optionsModel.getSnapshotLoaded()) {
+                    nodeModel.initializeSnapshot(true, optionsModel.getSnapshotDirectory());
+                    optionsModel.setSnapshotLoaded(true);
+                }
             }
         }
         onClicked: {
