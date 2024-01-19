@@ -137,7 +137,7 @@ bool OptionsQmlModel::getLoadUtxo()
         return false;
     }
     bool loadUtxo = loadUtxoValue.get_bool();
-    LogPrintf("[options_model] loadUtxo = %s\n", loadUtxo ? "true" : "false");
+    LogPrintf("[options_model] loadUtxo = %s\n", loadUtxo ? "true" : "false"); // for debug only. delete later
     return loadUtxo;
 }
 
@@ -158,6 +158,7 @@ QString OptionsQmlModel::getSnapshotDirectory()
         return "";
     }
     std::string snapshotDir = snapshotDirValue.get_str();
+    // for debug only. delete later
     LogPrintf("[options_model] snapshotDir = %s\n", snapshotDir);
     return QString::fromStdString(snapshotDir);
 }
@@ -169,7 +170,7 @@ bool OptionsQmlModel::getSnapshotLoaded()
         return false;
     }
     bool snapshotLoaded = snapshotLoadedValue.get_bool();
-    LogPrintf("[options_model] snapshotLoaded = %s\n", snapshotLoaded ? "true" : "false");
+    LogPrintf("[options_model] snapshotLoaded = %s\n", snapshotLoaded ? "true" : "false"); // for debug only. delete later
     return snapshotLoaded;
 }
 
@@ -177,7 +178,7 @@ void OptionsQmlModel::setSnapshotLoaded(bool new_snapshot_loaded)
 {
     if (new_snapshot_loaded != m_snapshot_loaded) {
         m_snapshot_loaded = new_snapshot_loaded;
-        m_node.updateRwSetting("snapshotloaded", new_snapshot_loaded);
+        m_node.updateRwSetting("snapshotloaded", new_snapshot_loaded); // for debug only. delete later
         Q_EMIT snapshotLoadedChanged(new_snapshot_loaded);
     }
 }

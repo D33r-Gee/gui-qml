@@ -28,7 +28,7 @@ Page {
     }
 
     function onInitializationFinished() {
-        nodeModel.initializeSnapshot(optionsModel.getLoadUtxo() && !optionsModel.getSnapshotLoaded(), chainModel, optionsModel.getSnapshotDirectory());
+        nodeModel.initializeSnapshot(optionsModel.getLoadUtxo() && !optionsModel.getSnapshotLoaded(), optionsModel.getSnapshotDirectory());
         optionsModel.setSnapshotLoaded(true);
     }
 }

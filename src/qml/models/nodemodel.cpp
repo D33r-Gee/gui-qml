@@ -160,14 +160,17 @@ void NodeModel::ConnectToNumConnectionsChangedSignal()
 
 
 
-void NodeModel::initializeSnapshot(bool initLoadSnapshot, ChainModel* chainModel, QString path_file) {
+void NodeModel::initializeSnapshot(bool initLoadSnapshot, QString path_file) {
     if (initLoadSnapshot) {
         QThread* snapshot_thread = new QThread();
-        SnapshotLoader* loader = new SnapshotLoader(this, chainModel, path_file);
-        loader->moveToThread(snapshot_thread);
 
-        connect(snapshot_thread, &QThread::started, loader, &SnapshotLoader::loadSnapshot);
-        connect(snapshot_thread, &QThread::finished, loader, &QObject::deleteLater);
+        // Capture path_file by value
+        auto lambda = [this, path_file]() {
+            bool result = this->snapshotLoad(path_file);
+            Q_EMIT snapshotLoaded(result);
+        };
+
+        connect(snapshot_thread, &QThread::started, lambda);
         connect(snapshot_thread, &QThread::finished, snapshot_thread, &QThread::deleteLater);
 
         snapshot_thread->start();
