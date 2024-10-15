@@ -45,6 +45,8 @@ OptionsQmlModel::OptionsQmlModel(interfaces::Node& node, bool is_onboarded)
     m_upnp = SettingToBool(m_node.getPersistentSetting("upnp"), DEFAULT_UPNP);
 
     m_dataDir = getDefaultDataDirString();
+
+    m_snapshot_load_completed = SettingToBool(m_node.getPersistentSetting("snapshotloadcompleted"), false);
 }
 
 void OptionsQmlModel::setDbcacheSizeMiB(int new_dbcache_size_mib)
@@ -201,6 +203,17 @@ void OptionsQmlModel::setDataDir(QString new_data_dir)
     }
 }
 
+void OptionsQmlModel::setSnapshotLoadCompleted(bool new_snapshot_load_completed)
+{
+    if (new_snapshot_load_completed != m_snapshot_load_completed) {
+        m_snapshot_load_completed = new_snapshot_load_completed;
+        if (m_onboarded) {
+            m_node.updateRwSetting("snapshotloadcompleted", new_snapshot_load_completed);
+        }
+        Q_EMIT snapshotLoadCompletedChanged(new_snapshot_load_completed);
+    }
+}
+
 void OptionsQmlModel::onboard()
 {
     m_node.resetSettings();
@@ -224,6 +237,9 @@ void OptionsQmlModel::onboard()
     }
     if (m_upnp) {
         m_node.updateRwSetting("upnp", m_upnp);
+    }
+    if (m_snapshot_load_completed) {
+        m_node.updateRwSetting("snapshotloadcompleted", m_snapshot_load_completed);
     }
     m_onboarded = true;
 }

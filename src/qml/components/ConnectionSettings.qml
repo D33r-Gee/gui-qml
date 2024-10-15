@@ -8,36 +8,59 @@ import QtQuick.Layouts 1.15
 import "../controls"
 
 ColumnLayout {
-    property bool snapshotImported: false
+    // TODO: Remove this once storing the snapshot path is implemented
+    property bool isOnboarding: false
+    property bool snapshotImported: optionsModel.snapshotLoadCompleted
+
+    Component.onCompleted: {
+        snapshotImported = optionsModel.snapshotLoadCompleted
+    }
+
     function setSnapshotImported(imported) {
         snapshotImported = imported
+        optionsModel.setSnapshotLoadCompleted(imported)
     }
     spacing: 4
-    Setting {
-        id: gotoSnapshot
+    Item {
+        // TODO: Remove this once storing the snapshot path is implemented
+        visible: !isOnboarding
+        height: visible ? implicitHeight : 0
         Layout.fillWidth: true
-        header: qsTr("Load snapshot")
-        description: qsTr("Instant use with background sync")
-        actionItem: Item {
-            width: 26
-            height: 26
-            CaretRightIcon {
-                anchors.centerIn: parent
-                visible: !snapshotImported
-                color: gotoSnapshot.stateColor
+        Layout.preferredHeight: gotoSnapshot.height
+
+        Setting {
+            id: gotoSnapshot
+            visible: parent.visible
+            Layout.fillWidth: true
+            header: qsTr("Load snapshot")
+            description: qsTr("Instant use with background sync")
+            actionItem: Item {
+                width: 26
+                height: 26
+                CaretRightIcon {
+                    // TODO: aligment will be fixed once Onboarding snapshot works
+                    anchors.right: parent.right
+                    anchors.verticalCenter: parent.verticalCenter
+                    visible: !snapshotImported
+                    color: gotoSnapshot.stateColor
+                }
+                GreenCheckIcon {
+                    anchors.centerIn: parent
+                    visible: snapshotImported
+                    color: Theme.color.transparent
+                }
             }
-            GreenCheckIcon {
-                anchors.centerIn: parent
-                visible: snapshotImported
-                color: Theme.color.transparent
+            onClicked: {
+                connectionSwipe.incrementCurrentIndex()
+                connectionSwipe.incrementCurrentIndex()
             }
-        }
-        onClicked: {
-            connectionSwipe.incrementCurrentIndex()
-            connectionSwipe.incrementCurrentIndex()
         }
     }
-    Separator { Layout.fillWidth: true }
+    Separator {
+        Layout.fillWidth: true
+        // TODO: Remove this once storing the snapshot path is implemented
+        visible: !isOnboarding
+    }
     Setting {
         Layout.fillWidth: true
         header: qsTr("Enable listening")

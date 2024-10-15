@@ -34,6 +34,7 @@ class NodeModel : public QObject
     Q_PROPERTY(double verificationProgress READ verificationProgress NOTIFY verificationProgressChanged)
     Q_PROPERTY(bool pause READ pause WRITE setPause NOTIFY pauseChanged)
     Q_PROPERTY(bool faulted READ errorState WRITE setErrorState NOTIFY errorStateChanged)
+    Q_PROPERTY(double snapshotProgress READ snapshotProgress NOTIFY snapshotProgressChanged)
 
 public:
     explicit NodeModel(interfaces::Node& node);
@@ -52,12 +53,18 @@ public:
     void setPause(bool new_pause);
     bool errorState() const { return m_faulted; }
     void setErrorState(bool new_error);
+    double snapshotProgress() const { return m_snapshot_progress; }
+    void setSnapshotProgress(double new_snapshot_progress);
+    bool isSnapshotLoaded() const;
 
     Q_INVOKABLE float getTotalBytesReceived() const { return (float)m_node.getTotalBytesRecv(); }
     Q_INVOKABLE float getTotalBytesSent() const { return (float)m_node.getTotalBytesSent(); }
 
     Q_INVOKABLE void startNodeInitializionThread();
     Q_INVOKABLE void requestShutdown();
+
+    Q_INVOKABLE void initializeSnapshot(bool initLoadSnapshot, QString path_file);
+    Q_INVOKABLE bool snapshotLoad(QString path_file, std::function<void(double)> progress_callback) const { return m_node.snapshotLoad(path_file.toStdString(), progress_callback); }
 
     void startShutdownPolling();
     void stopShutdownPolling();
@@ -77,6 +84,9 @@ Q_SIGNALS:
 
     void setTimeRatioList(int new_time);
     void setTimeRatioListInitial();
+    void initializationFinished();
+    void snapshotLoaded(bool result);
+    void snapshotProgressChanged();
 
 protected:
     void timerEvent(QTimerEvent* event) override;
@@ -90,7 +100,7 @@ private:
     double m_verification_progress{0.0};
     bool m_pause{false};
     bool m_faulted{false};
-
+    double m_snapshot_progress{0.0};
     int m_shutdown_polling_timer_id{0};
 
     QVector<QPair<int, double>> m_block_process_time;

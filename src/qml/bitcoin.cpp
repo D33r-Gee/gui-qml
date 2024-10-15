@@ -311,6 +311,8 @@ int QmlGuiMain(int argc, char* argv[])
     engine.rootContext()->setContextProperty("optionsModel", &options_model);
     engine.rootContext()->setContextProperty("needOnboarding", need_onboarding);
 
+    QObject::connect(&node_model, &NodeModel::snapshotLoaded, &options_model, &OptionsQmlModel::setSnapshotLoadCompleted);
+
     AppMode app_mode = SetupAppMode();
 
     qmlRegisterSingletonInstance<AppMode>("org.bitcoincore.qt", 1, 0, "AppMode", &app_mode);

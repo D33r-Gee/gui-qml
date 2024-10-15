@@ -5,6 +5,8 @@
 import QtQuick 2.15
 import QtQuick.Controls 2.15
 import QtQuick.Layouts 1.15
+import QtQuick.Dialogs 1.3
+
 
 import "../controls"
 
@@ -12,13 +14,13 @@ ColumnLayout {
     signal snapshotImportCompleted()
     property int snapshotVerificationCycles: 0
     property real snapshotVerificationProgress: 0
-    property bool snapshotVerified: false
+    property bool snapshotVerified: optionsModel.snapshotLoadCompleted
 
     id: columnLayout
     width: Math.min(parent.width, 450)
     anchors.horizontalCenter: parent.horizontalCenter
 
-
+    // TODO: Remove simulation timer before release
     Timer {
         id: snapshotSimulationTimer
         interval: 50 // Update every 50ms
@@ -42,7 +44,7 @@ ColumnLayout {
 
     StackLayout {
         id: settingsStack
-        currentIndex: 0
+        currentIndex: optionsModel.snapshotLoadCompleted ? 2 : 0
 
         ColumnLayout {
             Layout.alignment: Qt.AlignHCenter
@@ -78,8 +80,26 @@ ColumnLayout {
                 Layout.alignment: Qt.AlignCenter
                 text: qsTr("Choose snapshot file")
                 onClicked: {
-                    settingsStack.currentIndex = 1
-                    snapshotSimulationTimer.start()
+                    // TODO: Connect this to snapshot loading
+                    // settingsStack.currentIndex = 1
+                    fileDialog.open()
+                }
+            }
+
+            FileDialog {
+                id: fileDialog
+                folder: shortcuts.home
+                selectMultiple: false
+                onAccepted: {
+                    console.log("File chosen:", fileDialog.fileUrls)
+                    var snapshotFileName = fileDialog.fileUrl.toString()
+                    console.log("Snapshot file name:", snapshotFileName)
+                    if (snapshotFileName.endsWith(".dat")) {
+                        // optionsModel.setSnapshotDirectory(snapshotFileName)
+                        // console.log("Snapshot directory set:", optionsModel.getSnapshotDirectory())
+                        nodeModel.initializeSnapshot(true, snapshotFileName)
+                        settingsStack.currentIndex = 1
+                    }
                 }
             }
         }
@@ -109,9 +129,26 @@ ColumnLayout {
                 Layout.topMargin: 20
                 width: 200
                 height: 20
-                progress: snapshotVerificationProgress
+                progress: nodeModel.snapshotProgress
                 Layout.alignment: Qt.AlignCenter
                 progressColor: Theme.color.blue
+            }
+
+            Connections {
+                target: nodeModel
+                function onSnapshotProgressChanged() {
+                    progressIndicator.progress = nodeModel.snapshotProgress
+                }
+                function onSnapshotLoaded(success) {
+                    if (success) {
+                        progressIndicator.progress = 1
+                        settingsStack.currentIndex = 2  // Move to the "Snapshot Loaded" page
+                    } else {
+                        // Handle snapshot loading failure
+                        console.error("Snapshot loading failed")
+                        // You might want to show an error message or take other actions here
+                    }
+                }
             }
         }
 

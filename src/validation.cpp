@@ -5072,7 +5072,8 @@ static bool DeleteCoinsDBFromDisk(const fs::path db_path, bool is_snapshot)
 bool ChainstateManager::ActivateSnapshot(
         AutoFile& coins_file,
         const SnapshotMetadata& metadata,
-        bool in_memory)
+        bool in_memory,
+        std::function<void(double)> progress_callback)
 {
     uint256 base_blockhash = metadata.m_base_blockhash;
 
@@ -5127,7 +5128,7 @@ bool ChainstateManager::ActivateSnapshot(
     }
 
     bool snapshot_ok = this->PopulateAndValidateSnapshot(
-        *snapshot_chainstate, coins_file, metadata);
+        *snapshot_chainstate, coins_file, metadata, progress_callback);
 
     // If not in-memory, persist the base blockhash for use during subsequent
     // initialization.
@@ -5202,7 +5203,8 @@ static void SnapshotUTXOHashBreakpoint(const util::SignalInterrupt& interrupt)
 bool ChainstateManager::PopulateAndValidateSnapshot(
     Chainstate& snapshot_chainstate,
     AutoFile& coins_file,
-    const SnapshotMetadata& metadata)
+    const SnapshotMetadata& metadata,
+    std::function<void(double)> progress_callback)
 {
     // It's okay to release cs_main before we're done using `coins_cache` because we know
     // that nothing else will be referencing the newly created snapshot_chainstate yet.
@@ -5260,6 +5262,12 @@ bool ChainstateManager::PopulateAndValidateSnapshot(
 
         --coins_left;
         ++coins_processed;
+
+        // Call the progress callback
+        if (progress_callback) {
+            double progress = static_cast<double>(coins_processed) / coins_count;
+            progress_callback(progress);
+        }
 
         if (coins_processed % 1000000 == 0) {
             LogPrintf("[snapshot] %d coins loaded (%.2f%%, %.2f MB)\n",

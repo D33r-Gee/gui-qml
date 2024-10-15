@@ -37,6 +37,7 @@ class OptionsQmlModel : public QObject
     Q_PROPERTY(QString dataDir READ dataDir WRITE setDataDir NOTIFY dataDirChanged)
     Q_PROPERTY(QString getDefaultDataDirString READ getDefaultDataDirString CONSTANT)
     Q_PROPERTY(QUrl getDefaultDataDirectory READ getDefaultDataDirectory CONSTANT)
+    Q_PROPERTY(bool snapshotLoadCompleted READ snapshotLoadCompleted WRITE setSnapshotLoadCompleted NOTIFY snapshotLoadCompletedChanged)
 
 public:
     explicit OptionsQmlModel(interfaces::Node& node, bool is_onboarded);
@@ -67,6 +68,8 @@ public:
     QUrl getDefaultDataDirectory();
     Q_INVOKABLE bool setCustomDataDirArgs(QString path);
     Q_INVOKABLE QString getCustomDataDirString();
+    bool snapshotLoadCompleted() const { return m_snapshot_load_completed; }
+    void setSnapshotLoadCompleted(bool new_snapshot_load_completed);
 
 public Q_SLOTS:
     void setCustomDataDirString(const QString &new_custom_datadir_string) {
@@ -85,6 +88,7 @@ Q_SIGNALS:
     void upnpChanged(bool new_upnp);
     void customDataDirStringChanged(QString new_custom_datadir_string);
     void dataDirChanged(QString new_data_dir);
+    void snapshotLoadCompletedChanged(bool new_snapshot_load_completed);
 
 private:
     interfaces::Node& m_node;
@@ -105,6 +109,7 @@ private:
     bool m_upnp;
     QString m_custom_datadir_string;
     QString m_dataDir;
+    bool m_snapshot_load_completed;
 
     common::SettingsValue pruneSetting() const;
 };
