@@ -7,6 +7,10 @@
 #include <interfaces/node.h>
 #include <net.h>
 #include <node/interface_ui.h>
+#include <node/utxo_snapshot.h>
+#include <sync.h>
+#include <util/fs.h>
+#include <util/fs_helpers.h>
 #include <validation.h>
 
 #include <cassert>
@@ -14,14 +18,19 @@
 
 #include <QDateTime>
 #include <QMetaObject>
+#include <QObject>
 #include <QTimerEvent>
 #include <QString>
+#include <QUrl>
+#include <QThread>
+#include <QDebug>
 
 NodeModel::NodeModel(interfaces::Node& node)
     : m_node{node}
 {
     ConnectToBlockTipSignal();
     ConnectToNumConnectionsChangedSignal();
+    ConnectToSnapshotLoadProgressSignal();
 }
 
 void NodeModel::setBlockTipHeight(int new_height)
@@ -165,4 +174,45 @@ void NodeModel::ConnectToNumConnectionsChangedSignal()
         [this](PeersNumByType new_num_peers) {
             setNumOutboundPeers(new_num_peers.outbound_full_relay + new_num_peers.block_relay);
         });
+}
+
+void NodeModel::ConnectToSnapshotLoadProgressSignal()
+{
+    assert(!m_handler_snapshot_load_progress);
+
+    m_handler_snapshot_load_progress = m_node.handleSnapshotLoadProgress(
+        [this](double progress) {
+            setSnapshotProgress(progress);
+        });
+}
+
+void NodeModel::snapshotLoadThread(QString path_file) {
+    m_snapshot_loading = true;
+    Q_EMIT snapshotLoadingChanged();
+
+    path_file = QUrl(path_file).toLocalFile();
+
+    QThread* snapshot_thread = QThread::create([this, path_file]() {
+        SnapshotLoader loader(m_node, path_file);
+        bool result = loader.process();
+        if (!result) {
+            m_snapshot_loading = false;
+            Q_EMIT snapshotLoadingChanged();
+        } else {
+            m_snapshot_loaded = true;
+            Q_EMIT snapshotLoaded(result);
+            Q_EMIT snapshotLoadingChanged();
+        }
+    });
+
+    connect(snapshot_thread, &QThread::finished, snapshot_thread, &QThread::deleteLater);
+
+    snapshot_thread->start();
+}
+
+void NodeModel::setSnapshotProgress(double new_progress) {
+    if (new_progress != m_snapshot_progress) {
+        m_snapshot_progress = new_progress;
+        Q_EMIT snapshotProgressChanged();
+    }
 }
